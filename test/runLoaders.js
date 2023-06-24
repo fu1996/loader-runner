@@ -12,11 +12,15 @@ describe("runLoaders", function() {
 			resource: path.resolve(fixtures, "resource.bin")
 		}, function(err, result) {
 			if(err) return done(err);
+			// result 应该读取到了 内容为 `resource` 并且是utf8格式的buffer
 			result.result.should.be.eql([Buffer.from("resource", "utf-8")]);
+			// cacheable 字段应该为 true
 			result.cacheable.should.be.eql(true);
+			// fileDependencies 字段应该是一个 包含了 resource.bin 的绝对路径
 			result.fileDependencies.should.be.eql([
 				path.resolve(fixtures, "resource.bin")
 			]);
+			// contextDependencies 字段应该 为空
 			result.contextDependencies.should.be.eql([]);
 			done();
 		});
@@ -111,6 +115,26 @@ describe("runLoaders", function() {
 			]);
 			result.cacheable.should.be.eql(true);
 			result.fileDependencies.should.be.eql([]);
+			result.contextDependencies.should.be.eql([]);
+			done();
+		});
+	});
+	it("should process pitching 3 loaders", function(done) {
+		runLoaders({
+			resource: path.resolve(fixtures, "resource.bin"),
+			loaders: [
+				path.resolve(fixtures, "simple-pitching-loader.js"),
+				path.resolve(fixtures, "simple-async-pitching-loader.js"),
+			]
+		}, function(err, result) {
+			if(err) return done(err);
+			result.result.should.be.eql([
+				"resource-async-simple-simple"
+			]);
+			result.cacheable.should.be.eql(true);
+			result.fileDependencies.should.be.eql([
+				path.resolve(fixtures, "resource.bin")
+			]);
 			result.contextDependencies.should.be.eql([]);
 			done();
 		});

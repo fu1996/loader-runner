@@ -5,6 +5,7 @@
   "main": "lib/LoaderRunner.js",
   "scripts": {
     "lint": "eslint lib test",
+    "fix": "eslint --fix lib test",
     "pretest": "npm run lint",
     "test": "mocha --reporter spec",
     "precover": "npm run lint",
